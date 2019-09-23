@@ -74,7 +74,7 @@ namespace MangoUtilities.Serializing
         /// </summary>
         public void Reset()
         {
-            _offset = _index = _capacity = 0;
+            _offset = _index = 0;
         }
 
         /// <summary>
