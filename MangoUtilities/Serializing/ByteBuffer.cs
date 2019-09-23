@@ -5,19 +5,19 @@ namespace MangoUtilities.Serializing
     public partial class ByteBuffer
     {
         private byte[] _data;
-        private int _index, _length, _offset;
+        private int _index, _capacity, _offset;
 
         /// <summary>
         /// Create a new buffer on top of provided data with custom start index and length
         /// </summary>
-        public ByteBuffer(byte[] data, int length, int offset = 0)
+        public ByteBuffer(byte[] data, int capacity, int offset = 0)
         {
             _data = data;
             _offset = offset;
-            _length = length;
+            _capacity = capacity;
             _index = 0;
 
-            if (_length + _offset > _data.Length)
+            if (_capacity + _offset > _data.Length)
             {
                 throw new Exception("Length parameter exceeds data's length");
             }
@@ -39,21 +39,23 @@ namespace MangoUtilities.Serializing
         public byte[] Data => _data;
 
         /// <summary>
-        /// The length of the buffer
+        /// The capacity of the buffer
         /// </summary>
-        public int Length
+        public int Capacity
         {
-            get => _length;
+            get => _capacity;
             set
             {
-                _length = value;
+                _capacity = value;
                 
-                if (_data.Length < _length)
+                if (_data.Length < _capacity)
                 {
-                    Array.Resize(ref _data, _length);
+                    Array.Resize(ref _data, _capacity);
                 }
             }
         }
+
+        public int Length => Index;
 
         public int Index
         {
@@ -69,10 +71,10 @@ namespace MangoUtilities.Serializing
         
         /// <summary>
         /// Reset the buffer as an O(1) operation without actual re-allocation
-        /// <summary>
+        /// </summary>
         public void Reset()
         {
-            _offset = _index = _length = 0;
+            _offset = _index = _capacity = 0;
         }
 
         /// <summary>
@@ -80,7 +82,7 @@ namespace MangoUtilities.Serializing
         /// </summary>
         public bool Write(byte value)
         {
-            if (_offset + _index >= _length) { return false; }
+            if (_offset + _index >= _capacity) { return false; }
             
             _data[_offset + _index++] = value;
             return true;
@@ -91,7 +93,7 @@ namespace MangoUtilities.Serializing
         /// </summary>
         public bool Write(byte[] value)
         {
-            if (_offset + _index + value.Length > _length) { return false; }
+            if (_offset + _index + value.Length > _capacity) { return false; }
 
             foreach (var b in value)
             {
