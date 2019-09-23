@@ -66,6 +66,14 @@ namespace MangoUtilities.Serializing
             get => _offset;
             set => _offset = value;
         }
+        
+        /// <summary>
+        /// Reset the buffer as an O(1) operation without actual re-allocation
+        /// <summary>
+        public void Reset()
+        {
+            _offset = _index = _length = 0;
+        }
 
         /// <summary>
         /// Write a single byte to the buffer
